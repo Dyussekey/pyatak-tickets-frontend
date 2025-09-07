@@ -1,4 +1,3 @@
-<script>
 // Общие настройки фронта
 const CONFIG = {
   API_URL: "https://pyatak-tickets-api.onrender.com", // без завершающего слеша
@@ -32,4 +31,4 @@ const pad = n => String(n).padStart(2,"0");
 const localIsoNoZ = d => `${d.getFullYear()}-${pad(d.getMonth()+1)}-${pad(d.getDate())}T${pad(d.getHours())}:${pad(d.getMinutes())}:${pad(d.getSeconds())}`;
 const fmtShort = dt => { try{const d=new Date(dt);return d.toLocaleString("ru-RU",{day:'2-digit',month:'2-digit',hour:'2-digit',minute:'2-digit'});}catch{return dt;} };
 
-</script>
+
