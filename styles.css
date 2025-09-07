@@ -1,19 +1,49 @@
+/* Высокий контраст и читаемость на тёмной теме */
 :root{
-  --bg:#0e1116; --card:#171a21; --muted:#9aa4b2; --text:#e8eef6; --acc:#4da3ff; --acc2:#9bffb0;
+  --bg:#0d1117;        /* фон страницы */
+  --nav:#0b1320;       /* фон навбара/полей */
+  --card:#111827;      /* фон карточек */
+  --line:#233043;      /* границы */
+  --text:#e6edf3;      /* основной текст */
+  --muted:#9fb2c7;     /* вспомогательный текст */
+  --acc:#377dff;       /* основной акцент */
+  --acc2:#22c55e;      /* зелёный акцент */
 }
+
 html,body{height:100%}
-body{background:linear-gradient(180deg,#0e1116,#141823); color:var(--text)}
-.navbar{background:rgba(23,26,33,.7)!important; backdrop-filter: blur(6px)}
-.navbar .nav-link{color:var(--muted)} .navbar .nav-link.active{color:#fff}
-.card{border-radius:18px; background:radial-gradient(120% 120% at 0% 0%, #1e2430 0%, #151924 60%); border:1px solid rgba(255,255,255,.06); box-shadow:0 12px 30px rgba(0,0,0,.35)}
-.btn-primary{background:linear-gradient(90deg,var(--acc),#6ac9ff); border:0}
-.btn-success{background:linear-gradient(90deg,#2ecc71,var(--acc2)); border:0}
-.form-control,.form-select{background:#0f131b; border:1px solid rgba(255,255,255,.08); color:#e8eef6}
-.form-control::placeholder{color:#738198}
-small,.muted{color:var(--muted)}
+body{background:var(--bg); color:var(--text)}
+
+/* Навигация */
+.navbar{background:var(--nav)!important; backdrop-filter: blur(6px)}
+.navbar .navbar-brand,
+.navbar .nav-link{color:var(--text)!important}
+.navbar .nav-link{opacity:.85}
+.navbar .nav-link:hover,
+.navbar .nav-link.active{opacity:1; color:#fff!important; border-bottom:2px solid var(--acc)}
+
+/* Карточки и таблицы */
+.card{border-radius:18px; background:var(--card); border:1px solid var(--line); box-shadow:0 12px 30px rgba(0,0,0,.35)}
+.table{color:var(--text)}
+.table thead th{color:#c9d6e3; border-bottom:1px solid var(--line)}
+.table td, .table th{border-color:var(--line)}
+
+/* Формы */
+.form-label{color:var(--text)}
+.form-control, .form-select, textarea{
+  background:var(--nav); border:1px solid var(--line); color:var(--text)
+}
+.form-control::placeholder{color:var(--muted)}
+.form-text{color:var(--muted)}
+
+/* Кнопки — всегда светлый текст */
+.btn, .btn:focus{color:#fff!important}
+.btn-primary{background:var(--acc); border-color:var(--acc)}
+.btn-primary:hover{background:#2e6ae6; border-color:#2e6ae6}
+.btn-success{background:var(--acc2); border-color:var(--acc2)}
+.btn-success:hover{background:#1ea652; border-color:#1ea652}
+
+/* Прочее */
 a{color:#8ecbff} a:hover{color:#b5ddff}
-.hero-title{font-weight:700; letter-spacing:.2px}
-.badge-pill{border-radius:999px; padding:.4rem .7rem; background:#0f131b; color:#9fb2c7; border:1px solid rgba(255,255,255,.08)}
-.table{color:#e8eef6}
-.table thead{color:#c9d6e3}
-.table tr td, .table tr th{border-color:rgba(255,255,255,.06)}
+small,.muted{color:var(--muted)}
+.badge-pill{border-radius:999px; padding:.4rem .7rem; background:var(--nav); color:#cfe3ff; border:1px solid var(--line)}
+.text-danger{color:#ff8585!important}
