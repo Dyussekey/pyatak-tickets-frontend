@@ -96,4 +96,29 @@ small,.muted,.form-text{color:var(--text-weak)}
   opacity: 1;
 }
 
+/* --- Таблица: тёмная шапка и строки --- */
+
+/* шапка */
+.table thead th,
+.table thead td{
+  background-color:#0f1722 !important; /* тёмный фон */
+  color:#eaf2ff !important;            /* светлый текст */
+  border-bottom:1px solid var(--line) !important;
+}
+
+/* строки (оба цвета, «зебра») */
+.table tbody td,
+.table tbody th{
+  background-color:#0b1118 !important; /* базовый фон строк */
+  color:var(--text) !important;
+  border-color:var(--line) !important;
+}
+.table tbody tr:nth-child(odd) td,
+.table tbody tr:nth-child(odd) th{
+  background-color:#0d141e !important; /* чередование */
+}
+
+/* на всякий: отключаем белый фон Bootstrap */
+.table{ --bs-table-bg: transparent !important; }
+
 
