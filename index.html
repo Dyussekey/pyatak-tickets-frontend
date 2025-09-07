@@ -1,117 +1,171 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
-  <meta charset="UTF-8">
-  <title>Заявки для клубов Пятак</title>
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Заявки — Пятак</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
   <style>
-    body {
-      background-color: #f8f9fa;
-    }
-    .container {
-      max-width: 600px;
-      margin-top: 50px;
-    }
-    .card {
-      border-radius: 15px;
-      box-shadow: 0 0 10px rgba(0,0,0,0.1);
-    }
+    body { background:#f6f7f9 }
+    .card { border-radius:16px; box-shadow:0 6px 20px rgba(0,0,0,.06) }
+    .muted { color:#6c757d }
   </style>
 </head>
 <body>
-  <div class="container">
-    <div class="card p-4">
-      <h3 class="text-center mb-4">Создать заявку</h3>
+  <div class="container" style="max-width:720px; margin-top:42px; margin-bottom:42px;">
+    <div class="card p-4 p-md-5">
+      <h3 class="mb-3 text-center">Создать заявку</h3>
+      <p class="text-center muted mb-4">Клубы: Пятак, Пятак Premium, Пятак Level</p>
 
-      <!-- Выбор клуба -->
+      <!-- Клуб -->
       <div class="mb-3">
-        <label for="club" class="form-label">Клуб</label>
+        <label class="form-label" for="club">Клуб</label>
         <select id="club" class="form-select" onchange="updatePCList()">
-          <option value="">Выберите клуб</option>
+          <option value="" selected disabled>Выберите клуб</option>
           <option value="pyatak">Пятак</option>
           <option value="premium">Пятак Premium</option>
           <option value="level">Пятак Level</option>
         </select>
       </div>
 
-      <!-- Выбор ПК -->
+      <!-- ПК -->
       <div class="mb-3">
-        <label for="pc" class="form-label">ПК</label>
-        <select id="pc" class="form-select">
-          <option value="">Сначала выберите клуб</option>
+        <label class="form-label" for="pc">ПК / Зона</label>
+        <select id="pc" class="form-select" disabled>
+          <option>Сначала выберите клуб</option>
         </select>
+        <div class="form-text">В списке есть «Кассовый ПК», «Кибер-отель 1/2» и «Другое».</div>
       </div>
 
       <!-- Описание -->
       <div class="mb-3">
-        <label for="desc" class="form-label">Описание проблемы</label>
-        <textarea id="desc" class="form-control" rows="3" placeholder="Опишите проблему..."></textarea>
+        <label class="form-label" for="desc">Описание проблемы</label>
+        <textarea id="desc" class="form-control" rows="3" placeholder="Коротко и по делу…"></textarea>
       </div>
 
       <!-- Срок -->
       <div class="mb-3">
-        <label class="form-label">Срок исполнения</label><br>
+        <label class="form-label d-block">Срок исполнения</label>
         <div class="form-check form-check-inline">
-          <input type="radio" id="today" name="deadline" class="form-check-input" value="Сегодня">
-          <label for="today" class="form-check-label">Сегодня</label>
+          <input class="form-check-input" type="radio" name="deadline" id="dl_today" value="Сегодня">
+          <label class="form-check-label" for="dl_today">Сегодня</label>
         </div>
         <div class="form-check form-check-inline">
-          <input type="radio" id="tomorrow" name="deadline" class="form-check-input" value="Завтра">
-          <label for="tomorrow" class="form-check-label">Завтра</label>
+          <input class="form-check-input" type="radio" name="deadline" id="dl_tomorrow" value="Завтра">
+          <label class="form-check-label" for="dl_tomorrow">Завтра</label>
         </div>
         <div class="form-check form-check-inline">
-          <input type="radio" id="3days" name="deadline" class="form-check-input" value="3 дня">
-          <label for="3days" class="form-check-label">3 дня</label>
+          <input class="form-check-input" type="radio" name="deadline" id="dl_3days" value="3 дня">
+          <label class="form-check-label" for="dl_3days">3 дня</label>
         </div>
+        <div class="form-text">Дедлайн по умолчанию фиксируется на 20:00.</div>
       </div>
 
       <!-- Кнопка -->
-      <button class="btn btn-primary w-100" onclick="submitForm()">Отправить заявку</button>
+      <div class="d-grid gap-2">
+        <button id="sendBtn" class="btn btn-primary btn-lg" onclick="submitForm()">
+          Отправить заявку
+        </button>
+        <div id="result" class="text-center small"></div>
+      </div>
+    </div>
+
+    <div class="text-center mt-3 muted">
+      FAQ / Шпаргалка — <em>в разработке</em>
     </div>
   </div>
 
   <script>
+    const API_URL = "https://pyatak-tickets-api.onrender.com/api/tickets";
+
     function updatePCList() {
       const club = document.getElementById('club').value;
       const pcSelect = document.getElementById('pc');
       pcSelect.innerHTML = "";
+      pcSelect.disabled = false;
 
-      let pcs = [];
+      const add = (label) => {
+        const o = document.createElement('option');
+        o.value = label; o.textContent = label; pcSelect.appendChild(o);
+      };
 
       if (club === "pyatak") {
-        for (let i = 1; i <= 76; i++) pcs.push("ПК " + i);
-        pcs.push("Кассовый ПК", "Другое");
+        for (let i=1;i<=76;i++) add(`ПК ${i}`);
+        add("Кассовый ПК"); add("Другое");
       } else if (club === "premium") {
-        for (let i = 1; i <= 40; i++) pcs.push("ПК " + i);
-        pcs.push("Кибер-отель 1", "Кибер-отель 2", "Кассовый ПК", "Другое");
+        for (let i=1;i<=40;i++) add(`ПК ${i}`);
+        add("Кибер-отель 1"); add("Кибер-отель 2");
+        add("Кассовый ПК"); add("Другое");
       } else if (club === "level") {
-        for (let i = 1; i <= 30; i++) pcs.push("ПК " + i);
-        pcs.push("Кассовый ПК", "Другое");
+        for (let i=1;i<=30;i++) add(`ПК ${i}`);
+        add("Кассовый ПК"); add("Другое");
       } else {
-        pcs.push("Сначала выберите клуб");
+        add("Сначала выберите клуб");
+        pcSelect.disabled = true;
       }
-
-      pcs.forEach(pc => {
-        let opt = document.createElement("option");
-        opt.value = pc;
-        opt.textContent = pc;
-        pcSelect.appendChild(opt);
-      });
     }
 
-    function submitForm() {
-      const club = document.getElementById('club').value;
-      const pc = document.getElementById('pc').value;
-      const desc = document.getElementById('desc').value;
-      const deadline = document.querySelector('input[name="deadline"]:checked')?.value;
+    function localIsoNoZ(d) {
+      const p = (n) => String(n).padStart(2,'0');
+      return `${d.getFullYear()}-${p(d.getMonth()+1)}-${p(d.getDate())}T${p(d.getHours())}:${p(d.getMinutes())}:${p(d.getSeconds())}`;
+    }
 
-      if (!club || !pc || !desc || !deadline) {
-        alert("Заполните все поля!");
+    async function submitForm() {
+      const btn = document.getElementById('sendBtn');
+      const res = document.getElementById('result');
+
+      const clubSel = document.getElementById('club');
+      const clubVal = clubSel.value;
+      const clubText = clubSel.options[clubSel.selectedIndex]?.textContent;
+
+      const pc = document.getElementById('pc').value;
+      const desc = document.getElementById('desc').value.trim();
+      const deadlineLabel = document.querySelector('input[name="deadline"]:checked')?.value;
+
+      if (!clubVal || !pc || !desc || !deadlineLabel) {
+        res.innerHTML = "<span class='text-danger'>Заполните все поля.</span>";
+        return;
+      }
+      if (desc.length < 4) {
+        res.innerHTML = "<span class='text-danger'>Описание слишком короткое.</span>";
         return;
       }
 
-      // Здесь будет отправка на сервер
-      alert(`Заявка отправлена!\nКлуб: ${club}\nПК: ${pc}\nПроблема: ${desc}\nСрок: ${deadline}`);
+      // дедлайн в локальном времени (кассы в KZ) на 20:00
+      const now = new Date();
+      let d = new Date(now);
+      if (deadlineLabel === "Сегодня") { d.setHours(20,0,0,0); }
+      if (deadlineLabel === "Завтра")  { d.setDate(d.getDate()+1); d.setHours(20,0,0,0); }
+      if (deadlineLabel === "3 дня")   { d.setDate(d.getDate()+3); d.setHours(20,0,0,0); }
+
+      const payload = {
+        club: clubText,
+        pc,
+        description: desc,
+        deadline_iso: localIsoNoZ(d) // сервер трактует как Asia/Almaty
+      };
+
+      try {
+        btn.disabled = true; btn.textContent = "Отправка…";
+        res.textContent = "";
+        const r = await fetch(API_URL, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(payload)
+        });
+        if (!r.ok) throw new Error("Ошибка сервера");
+        const data = await r.json();
+        if (data.ok) {
+          res.innerHTML = `<span class="text-success">Готово. ID заявки: <b>${data.id}</b></span>`;
+          document.getElementById('desc').value = "";
+        } else {
+          throw new Error(data.error || "Неизвестная ошибка");
+        }
+      } catch (e) {
+        res.innerHTML = `<span class="text-danger">Не удалось отправить: ${e.message}</span>`;
+      } finally {
+        btn.disabled = false; btn.textContent = "Отправить заявку";
+      }
     }
   </script>
 </body>
