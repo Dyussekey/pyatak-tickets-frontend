@@ -76,3 +76,24 @@ small,.muted,.form-text{color:var(--text-weak)}
 
 /* Красный текст — чуть ярче */
 .text-danger{color:#ff9494!important}
+
+/* Радиокнопки и чекбоксы — светлые подписи и контраст */
+.form-check-label{ color: var(--text) !important; }
+.form-check-input{
+  background-color: var(--nav);
+  border: 1px solid var(--line);
+}
+.form-check-input:checked{
+  background-color: var(--accent);
+  border-color: var(--accent);
+}
+.form-check-input:focus{
+  border-color: var(--accent);
+  box-shadow: 0 0 0 .2rem rgba(59,130,246,.25);
+}
+.form-check-input:disabled + .form-check-label{
+  color: var(--text-weak) !important;
+  opacity: 1;
+}
+
+
